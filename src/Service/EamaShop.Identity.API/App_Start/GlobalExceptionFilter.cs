@@ -9,7 +9,7 @@ namespace EamaShop.Identity.API
     /// <summary>
     /// A global handing filter that runs after an action has thrown <see cref="Exception"/>
     /// </summary>
-    public class GlobalExceptionFilter : IExceptionFilter
+    internal class GlobalExceptionFilter : IExceptionFilter
     {
         private readonly ILogger<GlobalExceptionFilter> _logger;
         private readonly IHostingEnvironment _env;

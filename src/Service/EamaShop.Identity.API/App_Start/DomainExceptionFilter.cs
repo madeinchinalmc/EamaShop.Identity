@@ -8,7 +8,7 @@ namespace EamaShop.Identity.API
     /// <summary>
     /// A handing filter that runs after an action has thrown an <see cref="DomainException"/>
     /// </summary>
-    public class DomainExceptionFilter : IExceptionFilter
+    internal class DomainExceptionFilter : IExceptionFilter
     {
         private readonly ILogger<DomainExceptionFilter> _logger;
         /// <summary>

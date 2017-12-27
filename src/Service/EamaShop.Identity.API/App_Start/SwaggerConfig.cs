@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EamaShop.Identity.API
 {
-    public class SwaggerConfig
+    internal class SwaggerConfig
     {
         public static void Configure(SwaggerUIOptions options)
         {

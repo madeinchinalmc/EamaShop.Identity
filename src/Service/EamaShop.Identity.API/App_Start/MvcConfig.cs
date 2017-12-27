@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EamaShop.Identity.API
 {
-    public class MvcConfig
+    internal class MvcConfig
     {
         public static void Configure(MvcOptions options)
         {
