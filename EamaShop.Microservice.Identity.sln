@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{1A96
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{0933E84B-BFBF-4ED6-ABD0-DFCC1E3D5116}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DEEDBBB2-DBF2-42A3-B9B5-DE999180E351}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EamaShop.Service.Test", "test\EamaShop.Service.Test\EamaShop.Service.Test.csproj", "{9E929961-81D1-4AD3-9FAD-9290875A4F38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,10 @@ Global
 		{0933E84B-BFBF-4ED6-ABD0-DFCC1E3D5116}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0933E84B-BFBF-4ED6-ABD0-DFCC1E3D5116}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0933E84B-BFBF-4ED6-ABD0-DFCC1E3D5116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E929961-81D1-4AD3-9FAD-9290875A4F38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E929961-81D1-4AD3-9FAD-9290875A4F38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E929961-81D1-4AD3-9FAD-9290875A4F38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E929961-81D1-4AD3-9FAD-9290875A4F38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +47,7 @@ Global
 		{DD356182-2997-42FC-8141-003B0E5B3CD8} = {1A9634E7-A43B-4723-8B11-9F084F6EDE2D}
 		{0E85BA59-A6F9-4967-ABD3-BCF3FC552ECB} = {1A9634E7-A43B-4723-8B11-9F084F6EDE2D}
 		{1A9634E7-A43B-4723-8B11-9F084F6EDE2D} = {733FD522-DA14-45C4-A31C-8545F1374DF4}
+		{9E929961-81D1-4AD3-9FAD-9290875A4F38} = {DEEDBBB2-DBF2-42A3-B9B5-DE999180E351}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DFAE6E94-85F8-4D21-8F23-3AC729A4C40E}
