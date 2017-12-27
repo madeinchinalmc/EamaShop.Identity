@@ -15,7 +15,7 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DEEDBBB2-DBF2-42A3-B9B5-DE999180E351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EamaShop.Service.Test", "test\EamaShop.Service.Test\EamaShop.Service.Test.csproj", "{9E929961-81D1-4AD3-9FAD-9290875A4F38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EamaShop.Service.Tests", "test\EamaShop.Service.Test\EamaShop.Service.Tests.csproj", "{9E929961-81D1-4AD3-9FAD-9290875A4F38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
