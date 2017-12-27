@@ -7,11 +7,14 @@ WORKDIR /src
 COPY *.sln ./
 COPY src/Service/EamaShop.Identity.API/EamaShop.Identity.API.csproj src/Service/EamaShop.Identity.API/
 COPY src/Service/EamaShop.Identity.Services/EamaShop.Identity.Services.csproj src/Service/EamaShop.Identity.Services/
-COPY test/EamaShop.Service.Tests/EamaShop.Service.Tests.csproj test/EamaShop.Service.Tests/
+COPY test/EamaShop.Respository.Tests/EamaShop.Respository.Tests.csproj test/EamaShop.Respository.Tests
+COPY test/EamaShop.Service.Tests/EamaShop.Service.Tests.csproj test/EamaShop.Service.Tests
 RUN dotnet restore
 COPY . .
 WORKDIR /src/test/EamaShop.Service.Tests
 RUN dotnet test 
+WORKDIR /src/test/EamaShop.Respository.Tests
+RUN dotnet test
 WORKDIR /src/src/Service/EamaShop.Identity.API
 RUN dotnet build -c Release -o /app
 
