@@ -9,6 +9,10 @@
     <DocumentationFile>bin\Debug\netcoreapp2.0\EamaShop.Identity.API.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netcoreapp2.0\EamaShop.Identity.API.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Properties\PublishProfiles\registry.hub.docker.com_wuyafeng.pubxml" />
   </ItemGroup>
