@@ -10,7 +10,9 @@ namespace EamaShop.Client.Identity.Models
     using Newtonsoft.Json;
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
-
+    /// <summary>
+    /// 用户授权token
+    /// </summary>
     public partial class UserToken
     {
         /// <summary>

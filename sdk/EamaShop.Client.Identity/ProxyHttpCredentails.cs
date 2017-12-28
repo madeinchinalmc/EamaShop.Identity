@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Net.Http.Headers;
 namespace EamaShop.Client.Identity
 {
-    public class ProxyHttpCredentails : ServiceClientCredentials
+    internal class ProxyHttpCredentails : ServiceClientCredentials
     {
         private IHttpContextAccessor _httpContextAccessor;
         public ProxyHttpCredentails(IHttpContextAccessor httpContextAccessor)

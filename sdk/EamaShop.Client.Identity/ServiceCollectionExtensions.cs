@@ -14,6 +14,12 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// 添加身份认证的访问客户端
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="baseUri"></param>
+        /// <returns></returns>
         public static IServiceCollection AddIdentityClient(this IServiceCollection services, Uri baseUri)
         {
             if (services == null)
