@@ -38,6 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IUserTokenFactory, UserTokenFactory>();
             services.TryAddSingleton<ISmsSender, SmsSender>();
             services.TryAddSingleton<IVerifyCodeManager, VerifyCodeManager>();
+            services.TryAddSingleton<IEmailSender, EmailSender>();
             return services;
         }
     }
