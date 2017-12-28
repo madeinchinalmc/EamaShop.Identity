@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EamaShop.Service.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EamaShop.Respository.Tests", "test\EamaShop.Respository.Tests\EamaShop.Respository.Tests.csproj", "{EF241303-9543-46C0-BC20-BCAE2758B37D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{1F3333CD-6A68-4332-9DF8-A6A94A738D04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EamaShop.Client.Identity", "sdk\EamaShop.Client.Identity\EamaShop.Client.Identity.csproj", "{A41E259B-36C4-4352-B429-D5C8C45C1C13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,10 @@ Global
 		{EF241303-9543-46C0-BC20-BCAE2758B37D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF241303-9543-46C0-BC20-BCAE2758B37D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF241303-9543-46C0-BC20-BCAE2758B37D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A41E259B-36C4-4352-B429-D5C8C45C1C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A41E259B-36C4-4352-B429-D5C8C45C1C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A41E259B-36C4-4352-B429-D5C8C45C1C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A41E259B-36C4-4352-B429-D5C8C45C1C13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +63,7 @@ Global
 		{1A9634E7-A43B-4723-8B11-9F084F6EDE2D} = {733FD522-DA14-45C4-A31C-8545F1374DF4}
 		{BFC1CC41-F329-46CC-BC3A-E9928D1C4F19} = {DEEDBBB2-DBF2-42A3-B9B5-DE999180E351}
 		{EF241303-9543-46C0-BC20-BCAE2758B37D} = {DEEDBBB2-DBF2-42A3-B9B5-DE999180E351}
+		{A41E259B-36C4-4352-B429-D5C8C45C1C13} = {1F3333CD-6A68-4332-9DF8-A6A94A738D04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DFAE6E94-85F8-4D21-8F23-3AC729A4C40E}
