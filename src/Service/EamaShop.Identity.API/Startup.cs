@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
+using NLog.Config;
+using NLog.Targets;
 
 namespace EamaShop.Identity.API
 {
@@ -150,7 +152,8 @@ namespace EamaShop.Identity.API
 
                 app.UseDeveloperExceptionPage();
             }
-            LogFactoryConfig.Configure(logger, LogLevel.Debug);
+
+            ConfigureLogger(logger);
 
             try
             {
@@ -165,6 +168,65 @@ namespace EamaShop.Identity.API
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        private void ConfigureLogger(ILoggerFactory loggerFactory)
+        {
+            loggerFactory.AddNLog();
+            var config = new LoggingConfiguration();
+            var title = "${longdate}|事件Id=${event-properties:item=EventId.Id}|${logger}";
+            var body = "${newline}${message}";
+            var layout = title + body + "${newline}ErrorMessage: ${exception}${newline}####################################################################";
+
+            // 普通日志
+            var fileTarge = new FileTarget()
+            {
+                Layout = layout,
+                ArchiveNumbering = ArchiveNumberingMode.Sequence,
+                FileName = "../logs/${shortdate}/${level}.log",
+                FileNameKind = FilePathKind.Relative,
+                ArchiveFileKind = FilePathKind.Relative,
+                ArchiveFileName = "../logs/${shortdate}/${level}-{####}.log",
+                ArchiveEvery = FileArchivePeriod.None,
+                ArchiveAboveSize = 1024 * 1024
+            };
+
+            // 微软日志
+            var msTarge = new FileTarget()
+            {
+                Layout = layout,
+                ArchiveNumbering = ArchiveNumberingMode.Sequence,
+                FileName = "../logs/${shortdate}/Microsoft.log",
+                FileNameKind = FilePathKind.Relative,
+                ArchiveFileKind = FilePathKind.Relative,
+                ArchiveFileName = "../logs/${shortdate}/${level}-{####}.log",
+                ArchiveEvery = FileArchivePeriod.None,
+                ArchiveAboveSize = 1024 * 1024
+            };
+
+
+            config.AddTarget("file", fileTarge);
+            config.AddTarget("microsoft", msTarge);
+            config.AddTarget("skip", new NullTarget());
+
+            // 预发布和测试环境允许trace和debug
+            if (Environment.IsDevelopment() || Environment.IsStaging())
+            {
+                config.AddRuleForOneLevel(NLog.LogLevel.Trace, "file");
+                config.AddRuleForOneLevel(NLog.LogLevel.Debug, "file");
+            }
+            // 预发布允许信息级别
+            if (Environment.IsStaging())
+            {
+                config.AddRuleForOneLevel(NLog.LogLevel.Info, "file");
+            }
+            // 允许应用
+            config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Off, "file", "EamaShop.*");
+            // 微软的debug和trace日志跳过
+            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Debug, "skip", "Microsoft.*");
+            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Off, "microsoft", "Microsoft.*");
+            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Off, "microsoft", "EntityFramework*");
+            loggerFactory.ConfigureNLog(config);
         }
     }
 }

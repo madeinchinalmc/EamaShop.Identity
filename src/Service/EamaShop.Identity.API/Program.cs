@@ -10,13 +10,24 @@ using Microsoft.Extensions.Logging;
 
 namespace EamaShop.Identity.API
 {
+    /// <summary>
+    /// entry point class
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// entry point method
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             BuildWebHost(args).Run();
         }
-
+        /// <summary>
+        /// core
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
