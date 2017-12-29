@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using EamaShop.Identity.API.Dto;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -35,22 +36,15 @@ namespace EamaShop.Identity.API
                 context.Exception,
                 context.Exception.Message);
 
-            object resultObject;
+            ResultDTOWrapper resultObject;
 
             if (_env.IsDevelopment())
             {
-                resultObject = new
-                {
-                    Message = "An error occur.Try it again.",
-                    DeveloperMessage = context.Exception.ToString()
-                };
+                resultObject = ResultDTOWrapper.New(context.Exception.ToString());
             }
             else
             {
-                resultObject = new
-                {
-                    Message = "An error occur.Try it again."
-                };
+                resultObject = ResultDTOWrapper.New("An error occur.Try it again.");
             }
             context.Result = new ObjectResult(resultObject) { StatusCode = 500 };
 

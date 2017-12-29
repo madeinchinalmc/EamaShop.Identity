@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EamaShop.Identity.API.Dto;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using System;
@@ -31,7 +32,7 @@ namespace EamaShop.Identity.API
                 context.Exception,
                 context.Exception.Message);
 
-            context.Result = new ObjectResult(new { context.Exception.Message })
+            context.Result = new ObjectResult(ResultDTOWrapper.New(context.Exception.Message))
             {
                 StatusCode = 400
             };

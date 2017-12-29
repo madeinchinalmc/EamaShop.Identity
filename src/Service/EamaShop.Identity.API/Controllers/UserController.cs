@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using EamaShop.Identity.Services;
 using System.Security.Claims;
 using System.Net;
+using System.ComponentModel.DataAnnotations;
 
 namespace EamaShop.Identity.API.Controllers
 {
@@ -22,19 +23,19 @@ namespace EamaShop.Identity.API.Controllers
     public class UserController : Controller
     {
         /// <summary>
-        /// 注册
+        /// 用户注册接口
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
         public async Task<IActionResult> Register([FromForm]UserRegisterDTO parameters)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
             var service = HttpContext.RequestServices.GetRequiredService<IRegisterService>();
 
@@ -53,8 +54,8 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserGetDTO))]
-        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(IDictionary<string, string>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper<UserInfoDTO>))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ResultDTOWrapper<UserInfoDTO>))]
         public async Task<IActionResult> Details()
         {
             var userInfoService = HttpContext
@@ -64,10 +65,10 @@ namespace EamaShop.Identity.API.Controllers
 
             if (user == null)
             {
-                return NotFound(new { Message = "用户不存在" });
+                return NotFound(ResultDTOWrapper.New("用户不存在"));
             }
 
-            return Ok(new UserGetDTO(user));
+            return Ok(ResultDTOWrapper.Ok(new UserInfoDTO(user)));
         }
         /// <summary>
         /// 修改用户基础信息
@@ -75,12 +76,13 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="parameters"></param>
         /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
         public async Task<IActionResult> Put([FromForm]UserPutDTO parameters)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
 
             var userInfoService = HttpContext
@@ -98,7 +100,7 @@ namespace EamaShop.Identity.API.Controllers
                  editor.HeadImageUri = parameters.HeadImageUri;
              }, HttpContext.RequestAborted);
 
-            return Ok();
+            return Ok(ResultDTOWrapper.New());
         }
         /// <summary>
         /// 修改密码接口
@@ -106,12 +108,13 @@ namespace EamaShop.Identity.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPut("password")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
         public async Task<IActionResult> ChangePassword([FromForm]UserPasswordPutDTO parameters)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
 
             var userInfoService = HttpContext
@@ -125,19 +128,20 @@ namespace EamaShop.Identity.API.Controllers
                 token: parameters.Token,
                 cancellationToken: HttpContext.RequestAborted);
 
-            return Ok();
+            return Ok(ResultDTOWrapper.New());
         }
         /// <summary>
         /// 绑定手机号码
         /// </summary>
         /// <returns></returns>
         [HttpPut("phone")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
         public async Task<IActionResult> BindPhone([FromForm]UserPhonePutDTO parameters)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
 
             var userInfoService = HttpContext
@@ -151,7 +155,7 @@ namespace EamaShop.Identity.API.Controllers
                 verifyCode: parameters.VerifyCode,
                 cancellationToken: HttpContext.RequestAborted);
 
-            return Ok();
+            return Ok(ResultDTOWrapper.New());
         }
         /// <summary>
         /// 修改用户角色为商户 该接口不会对外提供，只能在当前测试页面进行查看
@@ -159,22 +163,22 @@ namespace EamaShop.Identity.API.Controllers
         /// <returns></returns>
         [HttpPut("role/{id}")]
         [Authorize(Roles = nameof(UserRole.Admin))]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Role(long id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
+        public async Task<IActionResult> Role([Range(1, long.MaxValue)]long id)
         {
             var userInfoService = HttpContext
                .RequestServices
                .GetRequiredService<IUserInfoService>();
 
-            if (id <= 0)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
 
             await userInfoService.ChangeRole(id, UserRole.Merchant);
 
-            return Ok();
+            return Ok(ResultDTOWrapper.New());
         }
     }
 }

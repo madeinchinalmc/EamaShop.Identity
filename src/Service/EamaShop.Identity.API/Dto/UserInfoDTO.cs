@@ -11,10 +11,10 @@ namespace EamaShop.Identity.API.Dto
     /// <summary>
     /// 用户描述信息 如果未特殊说明 字段默认为非空
     /// </summary>
-    public class UserGetDTO
+    public class UserInfoDTO
     {
         private readonly ApplicationUser _user;
-        public UserGetDTO(ApplicationUser user)
+        public UserInfoDTO(ApplicationUser user)
         {
             _user = user ?? throw new ArgumentNullException(nameof(user));
         }

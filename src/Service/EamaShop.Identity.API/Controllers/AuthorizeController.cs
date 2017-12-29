@@ -33,24 +33,24 @@ namespace EamaShop.Identity.API.Controllers
             _tokenFactory = tokenFactory ?? throw new ArgumentNullException(nameof(tokenFactory));
         }
         /// <summary>
-        /// 使用jwtBearer授权
+        /// 使用jwtBearer授权登陆
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
+        /// <param name="parameters">接口参数</param>
+        /// <returns>处理结果</returns>
         [HttpPost("jwtbearer")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserToken))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper<UserToken>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper<UserToken>))]
         public async Task<IActionResult> JwtBearer([FromForm]JwtBearerAuthDto parameters)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
             var user = await _loginService.LoginAsync(parameters.Name, parameters.Password);
 
             var token = _tokenFactory.CreateToken(user);
 
-            return Ok(token);
+            return Ok(new ResultDTOWrapper<UserToken>(token));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using EamaShop.Identity.Services;
+﻿using EamaShop.Identity.API.Dto;
+using EamaShop.Identity.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
@@ -46,25 +47,20 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="phone">用户的手机号码</param>
         /// <returns></returns>
         [HttpPost("phone")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
         public async Task<IActionResult> Post([Phone][Required]string phone)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
-            }
-            var user = await _userInfoSvc.GetByPhoneAsync(phone, HttpContext.RequestAborted);
-            if (user == null)
-            {
-                return BadRequest(new { Message = "用户未注册" });
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
 
             var verifyCode = await _verifyCodeSvc.Create(phone);
 
             await _smsSender.SendAsync(phone, "您的验证码为:" + verifyCode.Content);
 
-            return Ok();
+            return Ok(ResultDTOWrapper.New());
         }
         /// <summary>
         /// 发送邮箱验证码到指定邮箱
@@ -73,25 +69,20 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("email")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
         public async Task<IActionResult> Email([EmailAddress][Required]string email)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
             }
-            var user = await _userInfoSvc.GetByEmailAsync(email, HttpContext.RequestAborted);
 
-            if (user == null)
-            {
-                return BadRequest(new { Message = "用户未注册" });
-            }
             var verifyCode = await _verifyCodeSvc.Create(email);
 
             await _emailSender.SendAsync(email, "您的验证码为:" + verifyCode.Content);
 
-            return Ok();
+            return Ok(ResultDTOWrapper.New());
         }
     }
 }
