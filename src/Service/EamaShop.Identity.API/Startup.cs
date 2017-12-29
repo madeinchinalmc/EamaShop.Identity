@@ -123,6 +123,14 @@ namespace EamaShop.Identity.API
                         opt.IncludeXmlComments(f);
                     }
                     opt.OperationFilter<AuthorizeCheckOperationFilter>();
+
+                    opt.AddSecurityDefinition("JsonWebTokenBearer", new ApiKeyScheme()
+                    {
+                        Description = "登陆授权后获得的JsonWebToken 可以在<a href=\"http://120.78.181.207:8989/swagger\" target=\"_blank\">授权登陆页面</a>手动获取",
+                        In = "header",
+                        Name = "Authorization",
+                        Type = "apiKey",
+                    });
                 });
             }
             services.AddIdentityServices(Configuration.GetConnectionString("Master"));
