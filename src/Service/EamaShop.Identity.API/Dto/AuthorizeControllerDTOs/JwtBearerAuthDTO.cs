@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EamaShop.Identity.API.Controllers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace EamaShop.Identity.API.Dto
 {
+    /// <summary>
+    /// 用户登陆接口参数 <see cref="AuthorizeController.JwtBearer(JwtBearerAuthDto)"/>
+    /// </summary>
     public class JwtBearerAuthDto
     {
         /// <summary>

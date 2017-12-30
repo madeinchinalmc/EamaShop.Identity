@@ -19,11 +19,24 @@ namespace EamaShop.Identity.API
                 operation.Responses.Add("401", new Response { Description = "用户未登陆，或未提供用户token" });
 
                 operation.Responses.Add("403", new Response { Description = "用户权限不足，无法访问该api" });
-                
+
                 operation.Security = new List<IDictionary<string, IEnumerable<string>>>();
                 operation.Security.Add(new Dictionary<string, IEnumerable<string>>
                 {
                     { "JsonWebTokenBearer", new [] { context.GetType().Assembly.FullName } }
+                });
+            }
+            if (context.ApiDescription.ActionAttributes().OfType<UploadFileActionAttribute>().Any())
+            {
+                operation.Consumes.Add("multipart/form-data");
+                operation.Parameters = operation.Parameters ?? new List<IParameter>();
+                operation.Parameters.Add(new NonBodyParameter()
+                {
+                    Name = "file",
+                    In = "formData",
+                    Description = "选择需要上传的文件",
+                    Required = true,
+                    Type = "file"
                 });
             }
         }

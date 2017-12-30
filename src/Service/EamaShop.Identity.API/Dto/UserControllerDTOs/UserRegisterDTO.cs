@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace EamaShop.Identity.API.Dto
 {
     /// <summary>
-    /// 用户注册的表单信息
+    /// 用户注册的接口参数
     /// </summary>
     public class UserRegisterDTO
     {
@@ -24,7 +24,7 @@ namespace EamaShop.Identity.API.Dto
         [StringLength(18, MinimumLength = 6)]
         public string Password { get; set; }
         /// <summary>
-        /// 头像地址的绝对路径
+        /// 头像地址的绝对路径 
         /// </summary>
         [Required]
         [Url]

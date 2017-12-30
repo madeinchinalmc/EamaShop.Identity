@@ -19,6 +19,9 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
 using NLog.Config;
 using NLog.Targets;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using EamaShop.Identity.API.Dto;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace EamaShop.Identity.API
 {
@@ -82,7 +85,7 @@ namespace EamaShop.Identity.API
 
             services.AddResponseCaching();
 
-
+            
             //services.AddRabbitMQEventBus(opt =>
             //{
             //    opt.ConnectRetryCount = configuration.GetValue<int>("RabbitMQConnectionRetry");
@@ -134,6 +137,7 @@ namespace EamaShop.Identity.API
                 });
             }
             services.AddIdentityServices(Configuration.GetConnectionString("Master"));
+            ConfigureActionDTOParameter(services);
         }
 
 
@@ -146,7 +150,7 @@ namespace EamaShop.Identity.API
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
         {
             app.UseResponseCaching();
-
+            app.UseStaticFiles();
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
@@ -162,7 +166,6 @@ namespace EamaShop.Identity.API
             }
 
             ConfigureLogger(logger);
-
             try
             {
                 using (var scope = app.ApplicationServices.CreateScope())
@@ -177,7 +180,10 @@ namespace EamaShop.Identity.API
                 Console.WriteLine(ex);
             }
         }
-
+        private void ConfigureActionDTOParameter(IServiceCollection services)
+        {
+            services.TryAddScoped<ImagePostDTO>();
+        }
         private void ConfigureLogger(ILoggerFactory loggerFactory)
         {
             loggerFactory.AddNLog();
