@@ -22,6 +22,7 @@ using NLog.Targets;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using EamaShop.Identity.API.Dto;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.AspNetCore.Http;
 
 namespace EamaShop.Identity.API
 {
@@ -60,7 +61,11 @@ namespace EamaShop.Identity.API
                                                                               .AllowCredentials()
                                                                               .AllowAnyHeader()))
                 .AddAuthorization();
-
+            if (!services.Any(x => x.ServiceType == typeof(IHttpContextAccessor)))
+            {
+                Console.WriteLine("未注册HttpAccessor");
+                services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            }
             // for authentication 
             services.AddAuthentication(opt =>
             {
