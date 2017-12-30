@@ -200,7 +200,7 @@ namespace EamaShop.Identity.API
             var config = new LoggingConfiguration();
             var title = "${longdate}|事件Id=${event-properties:item=EventId.Id}|${logger}";
             var body = "${newline}${message}";
-            var layout = title + body + "${newline}ErrorMessage: ${exception}${newline}####################################################################";
+            var layout = title + body + "${newline}ErrorMessage: ${exception}${newline}${stacktrace}${newline}####################################################################";
 
             // 普通日志
             var fileTarge = new FileTarget()
