@@ -85,7 +85,7 @@ namespace EamaShop.Identity.API.Controllers
             /// <returns></returns>
             public Uri Transform(string fileName)
             {
-                return new Uri(Host+SavedDirectory + fileName);
+                return new Uri(new Uri(Host), SavedDirectory + fileName);
             }
         }
     }
