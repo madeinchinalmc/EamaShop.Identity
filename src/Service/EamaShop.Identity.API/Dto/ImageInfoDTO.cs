@@ -28,7 +28,7 @@ namespace EamaShop.Identity.API.Dto
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            Uri = uri.AbsolutePath;
+            Uri = uri.AbsoluteUri;
         }
         /// <summary>
         /// 图片的路径
