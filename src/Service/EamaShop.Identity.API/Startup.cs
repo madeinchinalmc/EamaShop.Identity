@@ -150,6 +150,11 @@ namespace EamaShop.Identity.API
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
         {
             app.UseResponseCaching();
+            env.WebRootPath = env.WebRootPath ?? "../wwwroot";
+            if (!Directory.Exists(env.WebRootPath))
+            {
+                Directory.CreateDirectory(env.WebRootPath);
+            }
             app.UseStaticFiles();
             app.UseCors("CorsPolicy");
 

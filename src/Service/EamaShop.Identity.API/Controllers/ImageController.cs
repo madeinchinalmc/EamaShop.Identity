@@ -70,7 +70,7 @@ namespace EamaShop.Identity.API.Controllers
 
                 SavedDirectory = configuration[IdentityDefaults.ImageSavedRelativePathKey];
                 Host = configuration[IdentityDefaults.ImageSavedServerHostKey];
-                var path = Path.Combine(environment.WebRootPath??"../wwwroot", SavedDirectory);
+                var path = Path.Combine(environment.WebRootPath, SavedDirectory);
 
                 BaseDirectory = Directory.CreateDirectory(path);
             }
