@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using EamaShop.Identity.API.Dto;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
 
 namespace EamaShop.Identity.API
 {
@@ -90,7 +91,7 @@ namespace EamaShop.Identity.API
 
             services.AddResponseCaching();
 
-            
+
             //services.AddRabbitMQEventBus(opt =>
             //{
             //    opt.ConnectRetryCount = configuration.GetValue<int>("RabbitMQConnectionRetry");
@@ -155,12 +156,13 @@ namespace EamaShop.Identity.API
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
         {
             app.UseResponseCaching();
-            env.WebRootPath = env.WebRootPath ?? "../wwwroot";
-            if (!Directory.Exists(env.WebRootPath))
-            {
-                Directory.CreateDirectory(env.WebRootPath);
-            }
-            app.UseStaticFiles();
+
+            //app.UseStaticFiles(options: new StaticFileOptions()
+            //{
+            //    OnPrepareResponse = ctx =>
+            //        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=600"),
+            //    FileProvider = env.WebRootFileProvider,
+            //});
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();

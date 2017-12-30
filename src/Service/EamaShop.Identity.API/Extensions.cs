@@ -18,7 +18,7 @@ namespace System
             return long.Parse(principal.FindFirstValue("Id"));
         }
         /// <summary>
-        /// 上传的图片是否是图片格式
+        /// 上传的文件是否是图片格式
         /// </summary>
         /// <param name="formFile"></param>
         /// <returns></returns>
@@ -29,6 +29,19 @@ namespace System
                 throw new ArgumentNullException(nameof(formFile));
             }
             return Regex.IsMatch(formFile.FileName, ".+(.JPEG|.jpeg|.JPG|.jpg|.GIF|.gif|.BMP|.bmp|.PNG|.png)$", RegexOptions.Compiled);
+        }
+        /// <summary>
+        /// 文件是否是图片格式
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public static bool IsPicture(this string file)
+        {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            return Regex.IsMatch(file, ".+(.JPEG|.jpeg|.JPG|.jpg|.GIF|.gif|.BMP|.bmp|.PNG|.png)$", RegexOptions.Compiled);
         }
     }
 }

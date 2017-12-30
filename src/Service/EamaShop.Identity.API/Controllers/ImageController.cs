@@ -15,78 +15,73 @@ namespace EamaShop.Identity.API.Controllers
     /// <summary>
     /// 图片接口
     /// </summary>
-    [Produces("application/json")]
     [Route("api/Image")]
     public class ImageController : Controller
     {
-        private readonly ImagePath _basePath;
-
+        /// <summary>
+        /// 图片的目录
+        /// </summary>
+        public string DirectoryName => "images";
+        /// <summary>
+        /// 当前的应用程序环境
+        /// </summary>
+        public IHostingEnvironment Environment { get; }
         /// <summary>
         /// init
         /// </summary>
-        /// <param name="configuration"></param>
         /// <param name="environment"></param>
-        public ImageController(IConfiguration configuration, IHostingEnvironment environment)
+        public ImageController(IHostingEnvironment environment)
         {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-
-            _basePath = new ImagePath(configuration, environment);
-
+            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
+        /// <summary>
+        /// 获取图片 非API型接口
+        /// </summary>
+        /// <param name="name">图片的名称</param>
+        /// <returns></returns>
+        [HttpGet("{name}")]
+        [Produces("image/jpg")]
+        [ResponseCache(Duration = 600, VaryByQueryKeys = new[] { "*" })]
+        public IActionResult GetPicture(string name)
+        {
+            if (!name.IsPicture())
+            {
+                ModelState.TryAddModelError("Message", "只能获取图片");
+                return BadRequest(ResultDTOWrapper.Error(ModelState));
+            }
+            var extension = Path.GetExtension(name);
+            try
+            {
+                var file = new FileStream(Path.Combine(Environment.WebRootPath, DirectoryName, name), FileMode.Open);
 
+                return File(file, $"image/{extension.Replace(".", "")}");
+            }
+            catch (FileNotFoundException)
+            {
+                return NotFound();
+            }
+        }
         /// <summary>
         /// 上传图片
         /// </summary>
         /// <returns>图片相关信息</returns>
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper<ImageInfoDTO>))]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper<ImageInfoDTO>))]
+        [ProducesResponseType(200, Type = typeof(ResultDTOWrapper<ImageInfoDTO>))]
+        [ProducesResponseType(400, Type = typeof(ResultDTOWrapper<ImageInfoDTO>))]
         [UploadFileAction]
+        [Produces("application/json")]
         public async Task<IActionResult> Upload([FromServices]ImagePostDTO parameters)
         {
-            var file = parameters.File;
-            var extension = Path.GetExtension(file.FileName);
-            var fileName = Guid.NewGuid().ToString().Replace("-", "") + extension;
-            var filePath = Path.Combine(_basePath.BaseDirectory.FullName, fileName);
+            var fileName = Guid.NewGuid().ToString().Replace("-", "").ToUpper() + Path.GetExtension(parameters.File.FileName);
 
-            using (var stream = new FileStream(filePath, FileMode.CreateNew))
+            var path = Path.Combine(Environment.WebRootPath, DirectoryName, fileName);
+            using (var file = new FileStream(path, FileMode.Create))
             {
-                await file.CopyToAsync(stream, HttpContext.RequestAborted);
-                await stream.FlushAsync();
+                await parameters.File.CopyToAsync(file);
+                await file.FlushAsync();
             }
-
-            return Ok(ResultDTOWrapper.Ok(new ImageInfoDTO(_basePath.Transform(fileName))));
+            return Ok(ResultDTOWrapper.Ok(new ImageInfoDTO(Request.Host + "/" + "api/Image/" + fileName)));
         }
-
-        private struct ImagePath
-        {
-            private readonly string SavedDirectory;
-            private readonly string Host;
-            public ImagePath(IConfiguration configuration, IHostingEnvironment environment)
-            {
-
-                SavedDirectory = configuration[IdentityDefaults.ImageSavedRelativePathKey];
-                Host = configuration[IdentityDefaults.ImageSavedServerHostKey];
-                var path = Path.Combine(environment.WebRootPath, SavedDirectory);
-
-                BaseDirectory = Directory.CreateDirectory(path);
-            }
-            /// <summary>
-            /// 图片所存储的目录路径
-            /// </summary>
-            public DirectoryInfo BaseDirectory { get; }
-            /// <summary>
-            /// 图片的文件名称
-            /// </summary>
-            /// <param name="fileName"></param>
-            /// <returns></returns>
-            public Uri Transform(string fileName)
-            {
-                return new Uri(new Uri(new Uri(Host), SavedDirectory), fileName);
-            }
-        }
+        
     }
 }
