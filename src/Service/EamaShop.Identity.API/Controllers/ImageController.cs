@@ -37,7 +37,7 @@ namespace EamaShop.Identity.API.Controllers
         /// <summary>
         /// 获取图片 非API型接口
         /// </summary>
-        /// <param name="name">图片的名称</param>
+        /// <param name="name">图片的名称 Eg.  1241asdjaoidn12od.jpg</param>
         /// <returns></returns>
         [HttpGet("{name}")]
         [Produces("image/jpg")]

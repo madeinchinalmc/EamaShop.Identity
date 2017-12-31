@@ -37,7 +37,10 @@ namespace EamaShop.Identity.Services
         public string Target { get; }
 
         public bool Used { get; private set; }
-
+        /// <summary>
+        /// Ensure current token is a validate token.(never used and matched given target)
+        /// </summary>
+        /// <param name="target"></param>
         public void EnsureValidate(string target)
         {
             if (target == null)
@@ -58,7 +61,9 @@ namespace EamaShop.Identity.Services
                 throw new DomainException("验证码无效");
             }
         }
-
+        /// <summary>
+        /// Use this verify code.
+        /// </summary>
         public void Use()
         {
             Used = true;

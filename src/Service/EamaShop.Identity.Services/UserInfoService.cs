@@ -77,8 +77,10 @@ namespace EamaShop.Identity.Services
             {
                 throw new ArgumentNullException(nameof(token));
             }
-            // TODO: check token and use it.
 
+            var verifyTokenCode = await _verifyCodeManager.GetAsync(token, cancellationToken);
+            verifyTokenCode.EnsureValidate(id.ToString());
+            verifyTokenCode.Use();
             var user = await _respository.FindById(id);
 
             if (user == null)
