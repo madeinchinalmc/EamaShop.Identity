@@ -257,7 +257,7 @@ namespace EamaShop.Client.Identity
             CustomInitialize();
         }    
         /// <summary>
-        /// 使用jwtBearer授权
+        /// 使用jwtBearer授权登陆
         /// </summary>
         /// <param name='name'>
         /// 账号： 手机号/邮箱/用户名
@@ -274,7 +274,7 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<object>> ApiAuthorizeJwtbearerPostWithHttpMessagesAsync(string name, string password, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTOUserToken>> ApiAuthorizeJwtbearerPostWithHttpMessagesAsync(string name, string password, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (name == null)
             {
@@ -369,7 +369,7 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<object>();
+            var _result = new HttpOperationResponse<ResultDTOUserToken>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
@@ -378,7 +378,7 @@ namespace EamaShop.Client.Identity
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<IDictionary<string, string>>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOUserToken>(_responseContent, this.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -396,7 +396,266 @@ namespace EamaShop.Client.Identity
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<UserToken>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOUserToken>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// 获取图片 非API型接口
+        /// </summary>
+        /// <param name='name'>
+        /// 图片的名称 Eg.  1241asdjaoidn12od.jpg
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse> ApiImageByNameGetWithHttpMessagesAsync(string name, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (name == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "name");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("name", name);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "ApiImageByNameGet", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = this.BaseUri.AbsoluteUri;
+            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Image/{name}").ToString();
+            _url = _url.Replace("{name}", Uri.EscapeDataString(name));
+            // Create HTTP transport objects
+            HttpRequestMessage _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("GET");
+            _httpRequest.RequestUri = new Uri(_url);
+            // Set Headers
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            // Set Credentials
+            if (this.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// 上传图片
+        /// </summary>
+        /// <param name='file'>
+        /// 选择需要上传的文件
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<ResultDTOImageInfoDTO>> ApiImagePostWithHttpMessagesAsync(System.IO.Stream file, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (file == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "file");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("file", file);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "ApiImagePost", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = this.BaseUri.AbsoluteUri;
+            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Image").ToString();
+            // Create HTTP transport objects
+            HttpRequestMessage _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("POST");
+            _httpRequest.RequestUri = new Uri(_url);
+            // Set Headers
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            MultipartFormDataContent _multiPartContent = new MultipartFormDataContent();
+            if (file != null)
+            {
+                StreamContent _file = new StreamContent(file);
+                _file.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                System.IO.FileStream _fileAsFileStream = file as System.IO.FileStream;
+                if (_fileAsFileStream != null)
+                {
+                    ContentDispositionHeaderValue _contentDispositionHeaderValue = new ContentDispositionHeaderValue("form-data");
+                    _contentDispositionHeaderValue.Name = "file";
+                    _contentDispositionHeaderValue.FileName = _fileAsFileStream.Name;
+                    _file.Headers.ContentDisposition = _contentDispositionHeaderValue;        
+                }    
+                _multiPartContent.Add(_file, "file");
+            }
+            _httpRequest.Content = _multiPartContent;
+            // Set Credentials
+            if (this.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200 && (int)_statusCode != 400)
+            {
+                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<ResultDTOImageInfoDTO>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOImageInfoDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 400)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOImageInfoDTO>(_responseContent, this.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -418,9 +677,6 @@ namespace EamaShop.Client.Identity
         /// <summary>
         /// 获取当前的用户信息
         /// </summary>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
-        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -430,12 +686,8 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<object>> ApiUserGetWithHttpMessagesAsync(string authorization, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTOUserInfoDTO>> ApiUserGetWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (authorization == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "authorization");
-            }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
@@ -443,7 +695,6 @@ namespace EamaShop.Client.Identity
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("authorization", authorization);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "ApiUserGet", tracingParameters);
             }
@@ -456,14 +707,6 @@ namespace EamaShop.Client.Identity
             _httpRequest.Method = new HttpMethod("GET");
             _httpRequest.RequestUri = new Uri(_url);
             // Set Headers
-            if (authorization != null)
-            {
-                if (_httpRequest.Headers.Contains("Authorization"))
-                {
-                    _httpRequest.Headers.Remove("Authorization");
-                }
-                _httpRequest.Headers.TryAddWithoutValidation("Authorization", authorization);
-            }
             if (customHeaders != null)
             {
                 foreach(var _header in customHeaders)
@@ -516,7 +759,7 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<object>();
+            var _result = new HttpOperationResponse<ResultDTOUserInfoDTO>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
@@ -525,7 +768,7 @@ namespace EamaShop.Client.Identity
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<UserGetDTO>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOUserInfoDTO>(_responseContent, this.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -543,7 +786,7 @@ namespace EamaShop.Client.Identity
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<IDictionary<string, string>>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOUserInfoDTO>(_responseContent, this.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -574,9 +817,6 @@ namespace EamaShop.Client.Identity
         /// <param name='sexy'>
         /// 修改后的性别
         /// </param>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
-        /// </param>
         /// <param name='country'>
         /// 修改后的用户所在国家
         /// </param>
@@ -595,7 +835,7 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> ApiUserPutWithHttpMessagesAsync(string nickName, string headImageUri, int sexy, string authorization, string country = default(string), string city = default(string), string province = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTO>> ApiUserPutWithHttpMessagesAsync(string nickName, string headImageUri, int sexy, string country = default(string), string city = default(string), string province = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (nickName == null)
             {
@@ -604,10 +844,6 @@ namespace EamaShop.Client.Identity
             if (headImageUri == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "headImageUri");
-            }
-            if (authorization == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "authorization");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -622,7 +858,6 @@ namespace EamaShop.Client.Identity
                 tracingParameters.Add("country", country);
                 tracingParameters.Add("city", city);
                 tracingParameters.Add("province", province);
-                tracingParameters.Add("authorization", authorization);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "ApiUserPut", tracingParameters);
             }
@@ -635,14 +870,6 @@ namespace EamaShop.Client.Identity
             _httpRequest.Method = new HttpMethod("PUT");
             _httpRequest.RequestUri = new Uri(_url);
             // Set Headers
-            if (authorization != null)
-            {
-                if (_httpRequest.Headers.Contains("Authorization"))
-                {
-                    _httpRequest.Headers.Remove("Authorization");
-                }
-                _httpRequest.Headers.TryAddWithoutValidation("Authorization", authorization);
-            }
             if (customHeaders != null)
             {
                 foreach(var _header in customHeaders)
@@ -709,7 +936,7 @@ namespace EamaShop.Client.Identity
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 403)
+            if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 401 && (int)_statusCode != 403)
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -727,9 +954,45 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
+            var _result = new HttpOperationResponse<ResultDTO>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 400)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -738,19 +1001,10 @@ namespace EamaShop.Client.Identity
         }
 
         /// <summary>
-        /// 注册
+        /// 用户注册接口
         /// </summary>
-        /// <param name='accountName'>
-        /// 用于注册的用户名 8~18个字符之间
-        /// </param>
-        /// <param name='password'>
-        /// 用于注册的密码 6~18个字符之间
-        /// </param>
-        /// <param name='headImageUri'>
-        /// 头像地址的绝对路径
-        /// </param>
-        /// <param name='nickName'>
-        /// 用户的昵称
+        /// <param name='parameters'>
+        /// 登陆的参数信息
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -761,23 +1015,11 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<IDictionary<string, string>>> ApiUserPostWithHttpMessagesAsync(string accountName, string password, string headImageUri, string nickName, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTO>> ApiUserPostWithHttpMessagesAsync(UserRegisterDTO parameters = default(UserRegisterDTO), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (accountName == null)
+            if (parameters != null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "accountName");
-            }
-            if (password == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "password");
-            }
-            if (headImageUri == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "headImageUri");
-            }
-            if (nickName == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "nickName");
+                parameters.Validate();
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -786,10 +1028,7 @@ namespace EamaShop.Client.Identity
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("accountName", accountName);
-                tracingParameters.Add("password", password);
-                tracingParameters.Add("headImageUri", headImageUri);
-                tracingParameters.Add("nickName", nickName);
+                tracingParameters.Add("parameters", parameters);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "ApiUserPost", tracingParameters);
             }
@@ -816,28 +1055,12 @@ namespace EamaShop.Client.Identity
 
             // Serialize Request
             string _requestContent = null;
-            MultipartFormDataContent _multiPartContent = new MultipartFormDataContent();
-            if (accountName != null)
+            if(parameters != null)
             {
-                StringContent _accountName = new StringContent(accountName, Encoding.UTF8);
-                _multiPartContent.Add(_accountName, "AccountName");
+                _requestContent = SafeJsonConvert.SerializeObject(parameters, this.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json; charset=utf-8");
             }
-            if (password != null)
-            {
-                StringContent _password = new StringContent(password, Encoding.UTF8);
-                _multiPartContent.Add(_password, "Password");
-            }
-            if (headImageUri != null)
-            {
-                StringContent _headImageUri = new StringContent(headImageUri, Encoding.UTF8);
-                _multiPartContent.Add(_headImageUri, "HeadImageUri");
-            }
-            if (nickName != null)
-            {
-                StringContent _nickName = new StringContent(nickName, Encoding.UTF8);
-                _multiPartContent.Add(_nickName, "NickName");
-            }
-            _httpRequest.Content = _multiPartContent;
             // Set Credentials
             if (this.Credentials != null)
             {
@@ -876,7 +1099,7 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IDictionary<string, string>>();
+            var _result = new HttpOperationResponse<ResultDTO>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
@@ -885,7 +1108,25 @@ namespace EamaShop.Client.Identity
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<IDictionary<string, string>>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -922,7 +1163,7 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> ApiUserPasswordPutWithHttpMessagesAsync(string newPassword, string token, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTO>> ApiUserPasswordPutWithHttpMessagesAsync(string newPassword, string token, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (newPassword == null)
             {
@@ -999,7 +1240,7 @@ namespace EamaShop.Client.Identity
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200)
+            if ((int)_statusCode != 200 && (int)_statusCode != 400)
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1017,9 +1258,45 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
+            var _result = new HttpOperationResponse<ResultDTO>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 400)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -1036,9 +1313,6 @@ namespace EamaShop.Client.Identity
         /// <param name='verifyCode'>
         /// 验证码
         /// </param>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
-        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -1048,7 +1322,7 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> ApiUserPhonePutWithHttpMessagesAsync(string phone, string verifyCode, string authorization, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTOWrapper>> ApiUserPhonePutWithHttpMessagesAsync(string phone, string verifyCode, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (phone == null)
             {
@@ -1057,10 +1331,6 @@ namespace EamaShop.Client.Identity
             if (verifyCode == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "verifyCode");
-            }
-            if (authorization == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "authorization");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1071,7 +1341,6 @@ namespace EamaShop.Client.Identity
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("phone", phone);
                 tracingParameters.Add("verifyCode", verifyCode);
-                tracingParameters.Add("authorization", authorization);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "ApiUserPhonePut", tracingParameters);
             }
@@ -1084,14 +1353,6 @@ namespace EamaShop.Client.Identity
             _httpRequest.Method = new HttpMethod("PUT");
             _httpRequest.RequestUri = new Uri(_url);
             // Set Headers
-            if (authorization != null)
-            {
-                if (_httpRequest.Headers.Contains("Authorization"))
-                {
-                    _httpRequest.Headers.Remove("Authorization");
-                }
-                _httpRequest.Headers.TryAddWithoutValidation("Authorization", authorization);
-            }
             if (customHeaders != null)
             {
                 foreach(var _header in customHeaders)
@@ -1138,7 +1399,7 @@ namespace EamaShop.Client.Identity
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 403)
+            if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 401 && (int)_statusCode != 403)
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1156,9 +1417,45 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
+            var _result = new HttpOperationResponse<ResultDTOWrapper>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOWrapper>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 400)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOWrapper>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -1171,9 +1468,6 @@ namespace EamaShop.Client.Identity
         /// </summary>
         /// <param name='id'>
         /// </param>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
-        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -1183,12 +1477,8 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> ApiUserRoleByIdPutWithHttpMessagesAsync(long id, string authorization, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTOWrapper>> ApiUserRoleByIdPutWithHttpMessagesAsync(long id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (authorization == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "authorization");
-            }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
@@ -1197,7 +1487,6 @@ namespace EamaShop.Client.Identity
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("id", id);
-                tracingParameters.Add("authorization", authorization);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "ApiUserRoleByIdPut", tracingParameters);
             }
@@ -1211,14 +1500,6 @@ namespace EamaShop.Client.Identity
             _httpRequest.Method = new HttpMethod("PUT");
             _httpRequest.RequestUri = new Uri(_url);
             // Set Headers
-            if (authorization != null)
-            {
-                if (_httpRequest.Headers.Contains("Authorization"))
-                {
-                    _httpRequest.Headers.Remove("Authorization");
-                }
-                _httpRequest.Headers.TryAddWithoutValidation("Authorization", authorization);
-            }
             if (customHeaders != null)
             {
                 foreach(var _header in customHeaders)
@@ -1271,9 +1552,45 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
+            var _result = new HttpOperationResponse<ResultDTOWrapper>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOWrapper>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 400)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOWrapper>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -1297,7 +1614,7 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> ApiVerifycodePhonePostWithHttpMessagesAsync(string phone = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTO>> ApiVerifycodePhonePostWithHttpMessagesAsync(string phone = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1380,9 +1697,45 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
+            var _result = new HttpOperationResponse<ResultDTO>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 400)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTO>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -1405,7 +1758,7 @@ namespace EamaShop.Client.Identity
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> ApiVerifycodeEmailPostWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ResultDTOWrapper>> ApiVerifycodeEmailPostWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1488,9 +1841,45 @@ namespace EamaShop.Client.Identity
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
+            var _result = new HttpOperationResponse<ResultDTOWrapper>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 400)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOWrapper>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultDTOWrapper>(_responseContent, this.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);

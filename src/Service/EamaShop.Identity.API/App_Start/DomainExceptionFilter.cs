@@ -32,7 +32,7 @@ namespace EamaShop.Identity.API
                 context.Exception,
                 context.Exception.Message);
 
-            context.Result = new ObjectResult(ResultDTOWrapper.New(context.Exception.Message))
+            context.Result = new ObjectResult(ResultDTO.New(context.Exception.Message))
             {
                 StatusCode = 400
             };

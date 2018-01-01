@@ -11,31 +11,31 @@ namespace EamaShop.Client.Identity.Models
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
 
-    public partial class UserToken
+    public partial class ResultDTOUserToken
     {
         /// <summary>
-        /// Initializes a new instance of the UserToken class.
+        /// Initializes a new instance of the ResultDTOUserToken class.
         /// </summary>
-        public UserToken() { }
+        public ResultDTOUserToken() { }
 
         /// <summary>
-        /// Initializes a new instance of the UserToken class.
+        /// Initializes a new instance of the ResultDTOUserToken class.
         /// </summary>
-        public UserToken(string token = default(string), DateTime? expiredIn = default(DateTime?))
+        public ResultDTOUserToken(UserToken data = default(UserToken), string message = default(string))
         {
-            Token = token;
-            ExpiredIn = expiredIn;
+            Data = data;
+            Message = message;
         }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "Token")]
-        public string Token { get; private set; }
+        [JsonProperty(PropertyName = "Data")]
+        public UserToken Data { get; private set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "ExpiredIn")]
-        public DateTime? ExpiredIn { get; private set; }
+        [JsonProperty(PropertyName = "Message")]
+        public string Message { get; private set; }
 
     }
 }

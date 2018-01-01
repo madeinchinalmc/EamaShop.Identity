@@ -26,6 +26,12 @@ namespace EamaShop.Identity.API.Controllers
     {
         private readonly ILoginService _loginService;
         private readonly IUserTokenFactory _tokenFactory;
+
+        /// <summary>
+        /// init
+        /// </summary>
+        /// <param name="loginService"></param>
+        /// <param name="tokenFactory"></param>
         public AuthorizeController(ILoginService loginService, IUserTokenFactory tokenFactory)
         {
             _loginService = loginService ?? throw new ArgumentNullException(nameof(loginService));
@@ -38,19 +44,19 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="parameters">接口参数</param>
         /// <returns>处理结果</returns>
         [HttpPost("jwtbearer")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper<UserToken>))]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper<UserToken>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTO<UserToken>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTO<UserToken>))]
         public async Task<IActionResult> JwtBearer([FromForm]JwtBearerAuthDto parameters)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ResultDTOWrapper.Error(ModelState));
+                return BadRequest(ResultDTO.New(ModelState.ToResponseString()));
             }
             var user = await _loginService.LoginAsync(parameters.Name, parameters.Password);
 
             var token = _tokenFactory.CreateToken(user);
 
-            return Ok(new ResultDTOWrapper<UserToken>(token));
+            return Ok(ResultDTO.Ok(token));
         }
     }
 }

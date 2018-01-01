@@ -18,7 +18,7 @@ namespace EamaShop.Client.Identity
     public static partial class IdentityClientExtensions
     {
             /// <summary>
-            /// 使用jwtBearer授权
+            /// 使用jwtBearer授权登陆
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -29,13 +29,13 @@ namespace EamaShop.Client.Identity
             /// <param name='password'>
             /// 用户密码
             /// </param>
-            public static object ApiAuthorizeJwtbearerPost(this IIdentityClient operations, string name, string password)
+            public static ResultDTOUserToken ApiAuthorizeJwtbearerPost(this IIdentityClient operations, string name, string password)
             {
                 return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiAuthorizeJwtbearerPostAsync(name, password), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// 使用jwtBearer授权
+            /// 使用jwtBearer授权登陆
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -49,7 +49,7 @@ namespace EamaShop.Client.Identity
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<object> ApiAuthorizeJwtbearerPostAsync(this IIdentityClient operations, string name, string password, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTOUserToken> ApiAuthorizeJwtbearerPostAsync(this IIdentityClient operations, string name, string password, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ApiAuthorizeJwtbearerPostWithHttpMessagesAsync(name, password, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -58,17 +58,68 @@ namespace EamaShop.Client.Identity
             }
 
             /// <summary>
-            /// 获取当前的用户信息
+            /// 获取图片 非API型接口
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
+            /// <param name='name'>
+            /// 图片的名称 Eg.  1241asdjaoidn12od.jpg
             /// </param>
-            public static object ApiUserGet(this IIdentityClient operations, string authorization)
+            public static void ApiImageByNameGet(this IIdentityClient operations, string name)
             {
-                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserGetAsync(authorization), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                Task.Factory.StartNew(s => ((IIdentityClient)s).ApiImageByNameGetAsync(name), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// 获取图片 非API型接口
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='name'>
+            /// 图片的名称 Eg.  1241asdjaoidn12od.jpg
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiImageByNameGetAsync(this IIdentityClient operations, string name, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                await operations.ApiImageByNameGetWithHttpMessagesAsync(name, null, cancellationToken).ConfigureAwait(false);
+            }
+
+            /// <summary>
+            /// 上传图片
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='file'>
+            /// 选择需要上传的文件
+            /// </param>
+            public static ResultDTOImageInfoDTO ApiImagePost(this IIdentityClient operations, System.IO.Stream file)
+            {
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiImagePostAsync(file), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// 上传图片
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='file'>
+            /// 选择需要上传的文件
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ResultDTOImageInfoDTO> ApiImagePostAsync(this IIdentityClient operations, System.IO.Stream file, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ApiImagePostWithHttpMessagesAsync(file, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -77,15 +128,23 @@ namespace EamaShop.Client.Identity
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
+            public static ResultDTOUserInfoDTO ApiUserGet(this IIdentityClient operations)
+            {
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserGetAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// 获取当前的用户信息
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<object> ApiUserGetAsync(this IIdentityClient operations, string authorization, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTOUserInfoDTO> ApiUserGetAsync(this IIdentityClient operations, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ApiUserGetWithHttpMessagesAsync(authorization, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ApiUserGetWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
@@ -106,9 +165,6 @@ namespace EamaShop.Client.Identity
             /// <param name='sexy'>
             /// 修改后的性别
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
-            /// </param>
             /// <param name='country'>
             /// 修改后的用户所在国家
             /// </param>
@@ -118,9 +174,9 @@ namespace EamaShop.Client.Identity
             /// <param name='province'>
             /// 修改后的用户所在省份
             /// </param>
-            public static void ApiUserPut(this IIdentityClient operations, string nickName, string headImageUri, int sexy, string authorization, string country = default(string), string city = default(string), string province = default(string))
+            public static ResultDTO ApiUserPut(this IIdentityClient operations, string nickName, string headImageUri, int sexy, string country = default(string), string city = default(string), string province = default(string))
             {
-                Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPutAsync(nickName, headImageUri, sexy, authorization, country, city, province), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPutAsync(nickName, headImageUri, sexy, country, city, province), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -138,9 +194,6 @@ namespace EamaShop.Client.Identity
             /// <param name='sexy'>
             /// 修改后的性别
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
-            /// </param>
             /// <param name='country'>
             /// 修改后的用户所在国家
             /// </param>
@@ -153,58 +206,43 @@ namespace EamaShop.Client.Identity
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiUserPutAsync(this IIdentityClient operations, string nickName, string headImageUri, int sexy, string authorization, string country = default(string), string city = default(string), string province = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTO> ApiUserPutAsync(this IIdentityClient operations, string nickName, string headImageUri, int sexy, string country = default(string), string city = default(string), string province = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.ApiUserPutWithHttpMessagesAsync(nickName, headImageUri, sexy, authorization, country, city, province, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.ApiUserPutWithHttpMessagesAsync(nickName, headImageUri, sexy, country, city, province, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
-            /// 注册
+            /// 用户注册接口
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='accountName'>
-            /// 用于注册的用户名 8~18个字符之间
+            /// <param name='parameters'>
+            /// 登陆的参数信息
             /// </param>
-            /// <param name='password'>
-            /// 用于注册的密码 6~18个字符之间
-            /// </param>
-            /// <param name='headImageUri'>
-            /// 头像地址的绝对路径
-            /// </param>
-            /// <param name='nickName'>
-            /// 用户的昵称
-            /// </param>
-            public static IDictionary<string, string> ApiUserPost(this IIdentityClient operations, string accountName, string password, string headImageUri, string nickName)
+            public static ResultDTO ApiUserPost(this IIdentityClient operations, UserRegisterDTO parameters = default(UserRegisterDTO))
             {
-                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPostAsync(accountName, password, headImageUri, nickName), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPostAsync(parameters), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// 注册
+            /// 用户注册接口
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='accountName'>
-            /// 用于注册的用户名 8~18个字符之间
-            /// </param>
-            /// <param name='password'>
-            /// 用于注册的密码 6~18个字符之间
-            /// </param>
-            /// <param name='headImageUri'>
-            /// 头像地址的绝对路径
-            /// </param>
-            /// <param name='nickName'>
-            /// 用户的昵称
+            /// <param name='parameters'>
+            /// 登陆的参数信息
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IDictionary<string, string>> ApiUserPostAsync(this IIdentityClient operations, string accountName, string password, string headImageUri, string nickName, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTO> ApiUserPostAsync(this IIdentityClient operations, UserRegisterDTO parameters = default(UserRegisterDTO), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ApiUserPostWithHttpMessagesAsync(accountName, password, headImageUri, nickName, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ApiUserPostWithHttpMessagesAsync(parameters, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
@@ -222,9 +260,9 @@ namespace EamaShop.Client.Identity
             /// <param name='token'>
             /// 用户修改密码的凭证 短信为验证码，邮箱也为验证码
             /// </param>
-            public static void ApiUserPasswordPut(this IIdentityClient operations, string newPassword, string token)
+            public static ResultDTO ApiUserPasswordPut(this IIdentityClient operations, string newPassword, string token)
             {
-                Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPasswordPutAsync(newPassword, token), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPasswordPutAsync(newPassword, token), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -242,9 +280,12 @@ namespace EamaShop.Client.Identity
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiUserPasswordPutAsync(this IIdentityClient operations, string newPassword, string token, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTO> ApiUserPasswordPutAsync(this IIdentityClient operations, string newPassword, string token, CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.ApiUserPasswordPutWithHttpMessagesAsync(newPassword, token, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.ApiUserPasswordPutWithHttpMessagesAsync(newPassword, token, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -259,12 +300,9 @@ namespace EamaShop.Client.Identity
             /// <param name='verifyCode'>
             /// 验证码
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
-            /// </param>
-            public static void ApiUserPhonePut(this IIdentityClient operations, string phone, string verifyCode, string authorization)
+            public static ResultDTOWrapper ApiUserPhonePut(this IIdentityClient operations, string phone, string verifyCode)
             {
-                Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPhonePutAsync(phone, verifyCode, authorization), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserPhonePutAsync(phone, verifyCode), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -279,15 +317,15 @@ namespace EamaShop.Client.Identity
             /// <param name='verifyCode'>
             /// 验证码
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
-            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiUserPhonePutAsync(this IIdentityClient operations, string phone, string verifyCode, string authorization, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTOWrapper> ApiUserPhonePutAsync(this IIdentityClient operations, string phone, string verifyCode, CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.ApiUserPhonePutWithHttpMessagesAsync(phone, verifyCode, authorization, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.ApiUserPhonePutWithHttpMessagesAsync(phone, verifyCode, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -298,12 +336,9 @@ namespace EamaShop.Client.Identity
             /// </param>
             /// <param name='id'>
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
-            /// </param>
-            public static void ApiUserRoleByIdPut(this IIdentityClient operations, long id, string authorization)
+            public static ResultDTOWrapper ApiUserRoleByIdPut(this IIdentityClient operations, long id)
             {
-                Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserRoleByIdPutAsync(id, authorization), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiUserRoleByIdPutAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -314,15 +349,15 @@ namespace EamaShop.Client.Identity
             /// </param>
             /// <param name='id'>
             /// </param>
-            /// <param name='authorization'>
-            /// 身份认证的授权token eg. Bearer ej
-            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiUserRoleByIdPutAsync(this IIdentityClient operations, long id, string authorization, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTOWrapper> ApiUserRoleByIdPutAsync(this IIdentityClient operations, long id, CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.ApiUserRoleByIdPutWithHttpMessagesAsync(id, authorization, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.ApiUserRoleByIdPutWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -335,9 +370,9 @@ namespace EamaShop.Client.Identity
             /// <param name='phone'>
             /// 用户的手机号码
             /// </param>
-            public static void ApiVerifycodePhonePost(this IIdentityClient operations, string phone = default(string))
+            public static ResultDTO ApiVerifycodePhonePost(this IIdentityClient operations, string phone = default(string))
             {
-                Task.Factory.StartNew(s => ((IIdentityClient)s).ApiVerifycodePhonePostAsync(phone), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiVerifycodePhonePostAsync(phone), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -353,9 +388,12 @@ namespace EamaShop.Client.Identity
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiVerifycodePhonePostAsync(this IIdentityClient operations, string phone = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTO> ApiVerifycodePhonePostAsync(this IIdentityClient operations, string phone = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.ApiVerifycodePhonePostWithHttpMessagesAsync(phone, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.ApiVerifycodePhonePostWithHttpMessagesAsync(phone, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -367,9 +405,9 @@ namespace EamaShop.Client.Identity
             /// </param>
             /// <param name='email'>
             /// </param>
-            public static void ApiVerifycodeEmailPost(this IIdentityClient operations, string email = default(string))
+            public static ResultDTOWrapper ApiVerifycodeEmailPost(this IIdentityClient operations, string email = default(string))
             {
-                Task.Factory.StartNew(s => ((IIdentityClient)s).ApiVerifycodeEmailPostAsync(email), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IIdentityClient)s).ApiVerifycodeEmailPostAsync(email), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -384,9 +422,12 @@ namespace EamaShop.Client.Identity
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiVerifycodeEmailPostAsync(this IIdentityClient operations, string email = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ResultDTOWrapper> ApiVerifycodeEmailPostAsync(this IIdentityClient operations, string email = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.ApiVerifycodeEmailPostWithHttpMessagesAsync(email, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.ApiVerifycodeEmailPostWithHttpMessagesAsync(email, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
     }

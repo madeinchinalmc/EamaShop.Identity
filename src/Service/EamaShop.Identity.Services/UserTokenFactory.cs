@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Linq;
 using Newtonsoft.Json;
+using EamaShop.Infrastructures.BLLModels;
 
 namespace EamaShop.Identity.Services
 {
@@ -23,7 +24,7 @@ namespace EamaShop.Identity.Services
 
             var identity = TransformAsClaimIdentity(user);
 
-            var securityTokenDescriptor = CreateDescriptor(user, identity);
+            var securityTokenDescriptor = CreateDescriptor(identity);
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -40,42 +41,15 @@ namespace EamaShop.Identity.Services
             {
                 throw new ArgumentNullException(nameof(user));
             }
+            var defitions = Enum.GetValues(typeof(UserRole)).Cast<UserRole>().ToArray();
 
-            var properties = user.GetType()
-                .GetTypeInfo()
-                .GetRuntimeProperties()
-                .Where(x => x.GetCustomAttribute<ClaimIgnoreFieldAttribute>() == null)
+            var roles = Array
+                .FindAll(defitions, x => user.Role.HasFlag(x))
+                .Select(x=>x.ToString())
                 .ToArray();
 
-            var claims = new List<Claim>();
-
-            foreach (var p in properties)
-            {
-                var value = p.GetValue(user);
-                if (value == null) continue;
-                if (value.GetType().IsPrimitive ||
-                    value is string ||
-                    value is DateTime ||
-                    value is DateTimeOffset ||
-                    value is Guid)
-                {
-                    claims.Add(Create(p.Name, value.ToString(), p.PropertyType.Name));
-                }
-                else
-                {
-                    value = JsonConvert.SerializeObject(value);
-                    claims.Add(Create(p.Name, value.ToString(), p.PropertyType.Name));
-                }
-            }
-
-            var roles = user.Role.ToString().Split(',');
-            claims.Add(Create(ClaimTypes.Name, user.AccountName, ClaimValueTypes.String));
-            Array.ForEach(roles, r =>
-            {
-                claims.Add(Create(ClaimTypes.Role, r, ClaimValueTypes.String));
-            });
-
-            return new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+            var eamaUser = new EamaUser(user.Id, user.AccountName, roles);
+            return eamaUser.GetPrincipal().Identities.OrderByDescending(x => x.FindFirstValue<UserRole>(ClaimsIdentity.DefaultRoleClaimType)).First();
         }
 
         private Claim Create(string type, string value, string dataType)
@@ -83,7 +57,7 @@ namespace EamaShop.Identity.Services
             return new Claim(type, value, dataType, ClaimsIdentity.DefaultIssuer);
         }
 
-        private SecurityTokenDescriptor CreateDescriptor(ApplicationUser user, ClaimsIdentity identity)
+        private SecurityTokenDescriptor CreateDescriptor(ClaimsIdentity identity)
         {
             var signKeyBytes = Encoding.ASCII.GetBytes(EamaDefaults.JwtBearerSignKey);
             var sskey = new SymmetricSecurityKey(signKeyBytes);

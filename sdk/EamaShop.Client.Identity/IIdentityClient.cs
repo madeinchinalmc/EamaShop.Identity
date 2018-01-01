@@ -41,7 +41,7 @@ namespace EamaShop.Client.Identity
 
 
             /// <summary>
-        /// 使用jwtBearer授权
+        /// 使用jwtBearer授权登陆
         /// </summary>
         /// <param name='name'>
         /// 账号： 手机号/邮箱/用户名
@@ -55,13 +55,13 @@ namespace EamaShop.Client.Identity
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<object>> ApiAuthorizeJwtbearerPostWithHttpMessagesAsync(string name, string password, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTOUserToken>> ApiAuthorizeJwtbearerPostWithHttpMessagesAsync(string name, string password, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 获取当前的用户信息
+        /// 获取图片 非API型接口
         /// </summary>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
+        /// <param name='name'>
+        /// 图片的名称 Eg.  1241asdjaoidn12od.jpg
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -69,7 +69,32 @@ namespace EamaShop.Client.Identity
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<object>> ApiUserGetWithHttpMessagesAsync(string authorization, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> ApiImageByNameGetWithHttpMessagesAsync(string name, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 上传图片
+        /// </summary>
+        /// <param name='file'>
+        /// 选择需要上传的文件
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultDTOImageInfoDTO>> ApiImagePostWithHttpMessagesAsync(System.IO.Stream file, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// 获取当前的用户信息
+        /// </summary>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ResultDTOUserInfoDTO>> ApiUserGetWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 修改用户基础信息
@@ -82,9 +107,6 @@ namespace EamaShop.Client.Identity
         /// </param>
         /// <param name='sexy'>
         /// 修改后的性别
-        /// </param>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
         /// </param>
         /// <param name='country'>
         /// 修改后的用户所在国家
@@ -101,22 +123,13 @@ namespace EamaShop.Client.Identity
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiUserPutWithHttpMessagesAsync(string nickName, string headImageUri, int sexy, string authorization, string country = default(string), string city = default(string), string province = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTO>> ApiUserPutWithHttpMessagesAsync(string nickName, string headImageUri, int sexy, string country = default(string), string city = default(string), string province = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// 注册
+        /// 用户注册接口
         /// </summary>
-        /// <param name='accountName'>
-        /// 用于注册的用户名 8~18个字符之间
-        /// </param>
-        /// <param name='password'>
-        /// 用于注册的密码 6~18个字符之间
-        /// </param>
-        /// <param name='headImageUri'>
-        /// 头像地址的绝对路径
-        /// </param>
-        /// <param name='nickName'>
-        /// 用户的昵称
+        /// <param name='parameters'>
+        /// 登陆的参数信息
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -124,7 +137,7 @@ namespace EamaShop.Client.Identity
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<IDictionary<string, string>>> ApiUserPostWithHttpMessagesAsync(string accountName, string password, string headImageUri, string nickName, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTO>> ApiUserPostWithHttpMessagesAsync(UserRegisterDTO parameters = default(UserRegisterDTO), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 修改密码接口
@@ -141,7 +154,7 @@ namespace EamaShop.Client.Identity
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiUserPasswordPutWithHttpMessagesAsync(string newPassword, string token, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTO>> ApiUserPasswordPutWithHttpMessagesAsync(string newPassword, string token, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 绑定手机号码
@@ -152,32 +165,26 @@ namespace EamaShop.Client.Identity
         /// <param name='verifyCode'>
         /// 验证码
         /// </param>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
-        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiUserPhonePutWithHttpMessagesAsync(string phone, string verifyCode, string authorization, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTOWrapper>> ApiUserPhonePutWithHttpMessagesAsync(string phone, string verifyCode, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 修改用户角色为商户 该接口不会对外提供，只能在当前测试页面进行查看
         /// </summary>
         /// <param name='id'>
         /// </param>
-        /// <param name='authorization'>
-        /// 身份认证的授权token eg. Bearer ej
-        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiUserRoleByIdPutWithHttpMessagesAsync(long id, string authorization, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTOWrapper>> ApiUserRoleByIdPutWithHttpMessagesAsync(long id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 发送验证码给指定的手机号
@@ -192,7 +199,7 @@ namespace EamaShop.Client.Identity
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiVerifycodePhonePostWithHttpMessagesAsync(string phone = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTO>> ApiVerifycodePhonePostWithHttpMessagesAsync(string phone = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// 发送邮箱验证码到指定邮箱
@@ -206,7 +213,7 @@ namespace EamaShop.Client.Identity
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiVerifycodeEmailPostWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<ResultDTOWrapper>> ApiVerifycodeEmailPostWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

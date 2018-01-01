@@ -47,7 +47,7 @@ namespace EamaShop.Identity.API.Controllers
             if (!name.IsPicture())
             {
                 ModelState.TryAddModelError("Message", "只能获取图片");
-                return BadRequest(ResultDTOWrapper.Error(ModelState));
+                return BadRequest(ResultDTO.New(ModelState.ToResponseString()));
             }
             var extension = Path.GetExtension(name);
             try
@@ -66,8 +66,8 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <returns>图片相关信息</returns>
         [HttpPost]
-        [ProducesResponseType(200, Type = typeof(ResultDTOWrapper<ImageInfoDTO>))]
-        [ProducesResponseType(400, Type = typeof(ResultDTOWrapper<ImageInfoDTO>))]
+        [ProducesResponseType(200, Type = typeof(ResultDTO<ImageInfoDTO>))]
+        [ProducesResponseType(400, Type = typeof(ResultDTO<ImageInfoDTO>))]
         [UploadFileAction]
         [Produces("application/json")]
         public async Task<IActionResult> Upload([FromServices]ImagePostDTO parameters)
@@ -80,7 +80,7 @@ namespace EamaShop.Identity.API.Controllers
                 await parameters.File.CopyToAsync(file);
                 await file.FlushAsync();
             }
-            return Ok(ResultDTOWrapper.Ok(new ImageInfoDTO(Request.Host + "/" + "api/Image/" + fileName)));
+            return Ok(ResultDTO.Ok(new ImageInfoDTO(Request.Host + "/" + "api/Image/" + fileName)));
         }
         
     }

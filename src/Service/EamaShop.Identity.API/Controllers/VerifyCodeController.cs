@@ -47,20 +47,20 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="phone">用户的手机号码</param>
         /// <returns></returns>
         [HttpPost("phone")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTO))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTO))]
         public async Task<IActionResult> Post([Phone][Required]string phone)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ResultDTOWrapper.Error(ModelState));
+                return BadRequest(ResultDTO.New(ModelState.ToResponseString()));
             }
 
             var verifyCode = await _verifyCodeSvc.Create(phone);
 
             await _smsSender.SendAsync(phone, "您的验证码为:" + verifyCode.Content);
 
-            return Ok(ResultDTOWrapper.New());
+            return Ok(ResultDTO.New());
         }
         /// <summary>
         /// 发送邮箱验证码到指定邮箱
@@ -69,20 +69,20 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("email")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTOWrapper))]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTOWrapper))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResultDTO))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResultDTO))]
         public async Task<IActionResult> Email([EmailAddress][Required]string email)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ResultDTOWrapper.Error(ModelState));
+                return BadRequest(ResultDTO.New(ModelState.ToResponseString()));
             }
 
             var verifyCode = await _verifyCodeSvc.Create(email);
 
             await _emailSender.SendAsync(email, "您的验证码为:" + verifyCode.Content);
 
-            return Ok(ResultDTOWrapper.New());
+            return Ok(ResultDTO.New());
         }
     }
 }
