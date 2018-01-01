@@ -36,15 +36,15 @@ namespace EamaShop.Identity.API
                 context.Exception,
                 context.Exception.Message);
 
-            ResultDTOWrapper resultObject;
+            ResultDTO resultObject;
 
             if (_env.IsDevelopment())
             {
-                resultObject = ResultDTOWrapper.New(context.Exception.ToString());
+                resultObject = ResultDTO.New(context.Exception.ToString());
             }
             else
             {
-                resultObject = ResultDTOWrapper.New("An error occur.Try it again.");
+                resultObject = ResultDTO.New("An error occur.Try it again.");
             }
             context.Result = new ObjectResult(resultObject) { StatusCode = 500 };
 
